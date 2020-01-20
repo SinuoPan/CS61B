@@ -1,0 +1,18 @@
+package h1_2;
+import java.net.*;
+import java.io.*;
+public class Nuke2 {
+	  public static void main(String[] arg) throws Exception {
+
+		    BufferedReader keyboard;
+		    String inputLine;
+		    keyboard = new BufferedReader(new InputStreamReader(System.in));
+		    
+		    System.out.print("Now enter: ");
+		    System.out.flush();        /* Make sure the line is printed immediately. */
+		    inputLine = keyboard.readLine();
+		    StringBuffer buff=new StringBuffer(inputLine);
+		    buff.deleteCharAt(1);
+		    System.out.print(buff);
+	  }
+}
