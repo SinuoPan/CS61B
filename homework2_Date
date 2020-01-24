@@ -1,0 +1,338 @@
+package h2;
+
+/* Date.java */
+
+import java.io.*;
+
+class Date {
+
+  /* Put your private data fields here. */
+	public int month;
+	public int day;
+	public int year;
+	public String s;
+
+  /** Constructs a date with the given month, day and year.   If the date is
+   *  not valid, the entire program will halt with an error message.
+   *  @param month is a month, numbered in the range 1...12.
+   *  @param day is between 1 and the number of days in the given month.
+   *  @param year is the year in question, with no digits omitted.
+   */
+  public Date(int month, int day, int year) {
+	  if (isValidDate(month,day,year)) {
+		  this.month=month;
+		  this.day=day;
+		  this.year=year;
+		  this.s=(String.valueOf(month)+"/"+String.valueOf(day)+"/"+String.valueOf(year));
+	  }else {
+	      System.out.println("Number Error! ");
+		  System.exit(0);
+	  }
+  }
+
+  /** Constructs a Date object corresponding to the given string.
+   *  @param s should be a string of the form "month/day/year" where month must
+   *  be one or two digits, day must be one or two digits, and year must be
+   *  between 1 and 4 digits.  If s does not match these requirements or is not
+   *  a valid date, the program halts with an error message.
+   */
+  public Date(String s) {
+	  
+	  String ss=new String(s);
+	  String[] strArr = ss.split("/");
+	  boolean check=(strArr.length==3);
+	  boolean check2=isValidDate(Integer.valueOf(strArr[0]),Integer.valueOf(strArr[1]),Integer.valueOf(strArr[2]));
+	  
+	  if (check&&check2){
+		  this.s=s;
+		  this.month=Integer.valueOf(strArr[0]);
+		  this.day=Integer.valueOf(strArr[1]);
+		  this.year=Integer.valueOf(strArr[2]);
+	  }else {
+		  System.out.println("String Error! ");
+	  }
+	  
+//	  boolean check1=(strArr.length==3);
+//	  
+//      String regex = "[1—9]|0[1-9]|10|11|12";
+//      boolean check2 = strArr[0].matches(regex);
+//	  
+//      int m=Integer.valueOf(strArr[1]);
+//      boolean check3=(0<m && m<32);
+//	 
+//      int l=Integer.valueOf(strArr[2]);
+//      boolean check4=(0<l && l<9999);
+//	  
+//      if (check1&&check2&&check3&&check4) {
+//    	  this.s=s;
+//      }else {
+//	      System.out.println("String Error! ");
+//		  System.exit(0);
+//      }
+  }
+
+  /** Checks whether the given year is a leap year.
+   *  @return true if and only if the input year is a leap year. 
+   *  
+   *A leap year is any year divisible by 4, except that a year divisible by 100 is not a
+   * leap year, except that a year divisible by 400 is a leap year after all.
+   * Hence, 1800 and 1900 are not leap years, but 1600 and 2000 are. 
+   */
+  public static boolean isLeapYear(int year) {
+	  if (year%4!=0) {
+		  return false;
+	  }else if(year%100==0) {
+		  if(year%400==0) {
+			  return true;
+		  }else {
+			  return false;
+		  }
+	  }else {
+		  return true;
+	  }
+  }
+
+  /** Returns the number of days in a given month.
+   *  @param month is a month, numbered in the range 1...12.
+   *  @param year is the year in question, with no digits omitted.
+   *  @return the number of days in the given month.
+   */
+  public static int daysInMonth(int month, int year) {
+    if (month==1||month==3||month==5||month==7||month==8||month==10||month==12) {
+    	return 31;
+    }else if(month==2) {
+    	if(isLeapYear(year)) {
+    		return 29;
+    	}else{
+    		return 28;
+    	}
+    }else {
+    	return 30;
+    }
+  }
+
+  /** Checks whether the given date is valid.
+   *  @return true if and only if month/day/year constitute a valid date.
+   *
+   *  Years prior to A.D. 1 are NOT valid.
+   */
+  public static boolean isValidDate(int month, int day, int year) {
+    if (year<1||month>12||month<1||day<1) {
+    	return false;
+    }
+    if(daysInMonth(month,year)<day) {
+    	return false;
+    }
+    return true;
+  }
+
+  /** Returns a string representation of this date in the form month/day/year.
+   *  The month, day, and year are printed in full as integers; for example,
+   *  12/7/2006 or 3/21/407.
+   *  @return a String representation of this date.
+   */
+  public String toString(Date d) {
+    return d.month+"/"+d.day+"/"+d.year; 
+  }
+
+  /** Determines whether this Date is before the Date d.
+   *  @return true if and only if this Date is before d. 
+   */
+  public boolean isBefore(Date d) {
+	  if(d.year<this.year) {
+		  return false;
+	  }else if(d.year>this.year) {
+		  return true;
+	  }else {
+		  if(d.month>this.month) {
+			  return true;
+		  }else if(d.month<this.month) {
+			  return false;
+		  }else {
+			  if(d.day>this.day) {
+				  return true;
+			  }else {
+				  return false;
+			  }
+		  }
+	  }
+  }
+
+  /** Determines whether this Date is after the Date d.
+   *  @return true if and only if this Date is after d. 
+   */
+  public boolean isAfter(Date d) {
+	  return (!isBefore(d))&&!((d.month==this.month)&&(d.day==this.day)&&(d.year==this.year)); 
+  }
+
+  /** Returns the number of this Date in the year.
+   *  @return a number n in the range 1...366, inclusive, such that this Date
+   *  is the nth day of its year.  (366 is only used for December 31 in a leap
+   *  year.)
+   */
+  public int dayInYear(int month, int day, int year) {
+	  int days=0;
+	  int Feb=0;
+	  days+=(month-1)*30+day;
+	  
+	  if (isLeapYear(year)) {
+		  Feb=-1;
+	  }else {
+		  Feb=-2;
+	  }
+	  
+	  switch(month){
+	  case 1:
+		  break;
+	  case 2:
+	      days+=1;
+	  case 3:
+		  days+=1;
+		  days+=Feb;
+		  break;
+	  case 4:
+	  case 5:
+    	  days+=2;
+    	  days+=Feb;
+	      break;
+	  case 6:
+	  case 7:
+    	  days+=3;
+    	  days+=Feb;
+	      break;	       
+	  case 8:
+    	  days+=4;
+    	  days+=Feb;
+	      break;		    	
+	  case 9:
+	  case 10:
+    	  days+=5;
+    	  days+=Feb;
+	      break;	  
+	  case 11:
+	  case 12:
+    	  days+=6;
+    	  days+=Feb;
+	      break;		       
+	  default:
+	      System.out.println("Month Number Error.");
+	}
+	  return days;
+  }
+
+  /** Determines the difference in days between d and this Date.  For example,
+   *  if this Date is 12/15/1997 and d is 12/14/1997, the difference is 1.
+   *  If this Date occurs before d, the result is negative.
+   *  @return the difference in days between d and this date.
+   */
+  public int difference(Date d) {
+	  int diff=0;
+	  if (isAfter(d)) {
+		  for (int i = d.year ; i < this.year ; i++) {
+			  if (isLeapYear(i)) {
+				  diff+=366;
+			  }else {
+				  diff+=365;
+			  }
+		  }
+		  diff+=dayInYear(this.month,this.day,this.year);
+		  diff-=dayInYear(d.month,d.day,d.year);
+	  }else if((d.month==this.month)&&(d.day==this.day)&&(d.year==this.year)) {
+		  diff=0;
+	  }else {
+		  for (int i = this.year ; i < d.year ; i++) {
+			  if (isLeapYear(i)) {
+				  diff-=366;
+			  }else {
+				  diff-=365;
+			  }
+		  }
+		  diff+=dayInYear(this.month,this.day,this.year);
+		  diff-=dayInYear(d.month,d.day,d.year);
+	  }
+	  return diff;
+  }
+
+  public static void main(String[] argv) {
+    System.out.println("\nTesting constructors.");
+    Date d1 = new Date(1, 1, 1);
+    System.out.println("Date should be 1/1/1: " + d1.s);
+    d1 = new Date("2/4/2");
+    System.out.println("Date should be 2/4/2: " + d1.s);
+    d1 = new Date("2/29/2000");
+    System.out.println("Date should be 2/29/2000: " + d1.s);
+    d1 = new Date("2/29/1904");
+    System.out.println("Date should be 2/29/1904: " + d1.s);
+
+    d1 = new Date(12, 31, 1975);
+    System.out.println("Date should be 12/31/1975: " + d1.s);
+    Date d2 = new Date("1/1/1976");
+    System.out.println("Date should be 1/1/1976: " + d2.s);
+    Date d3 = new Date("1/2/1976");
+    System.out.println("Date should be 1/2/1976: " + d3.s);
+
+    Date d4 = new Date("2/27/1977");
+    Date d5 = new Date("8/31/2110");
+    /* I recommend you write code to test the isLeapYear function! */
+    System.out.println("\nTesting leaping.");
+    Date d6 = new Date("1/24/2020");
+    if (isLeapYear(d6.year)) {
+    	System.out.println(d6.year+" is a leap year.");
+    }else {
+    	System.out.println(d6.year+" is not a leap year.");
+    }
+    Date d7= new Date("12/15/2021");
+    if (isLeapYear(d7.year)) {
+    	System.out.println(d7.year+" is a leap year.");
+    }else {
+    	System.out.println(d7.year+" is not a leap year.");
+    }
+    Date d8= new Date("12/5/2000");
+    if (isLeapYear(d8.year)) {
+    	System.out.println(d8.year+" is a leap year.");
+    }else {
+    	System.out.println(d8.year+" is not a leap year.");
+    }
+    Date d9= new Date("12/30/2100");
+    if (isLeapYear(d9.year)) {
+    	System.out.println(d9.year+" is a leap year.");
+    }else {
+    	System.out.println(d9.year+" is not a leap year.");
+    }
+    /* End - I recommend you write code to test the isLeapYear function! */
+    System.out.println("\nTesting before and after.");
+    System.out.println(d2.s + " after " + d1.s + " should be true: " + 
+                       d2.isAfter(d1));
+    System.out.println(d3.s + " after " + d2.s + " should be true: " + 
+                       d3.isAfter(d2));
+    System.out.println(d1.s + " after " + d1.s + " should be false: " + 
+                       d1.isAfter(d1));
+    System.out.println(d1.s + " after " + d2.s + " should be false: " + 
+                       d1.isAfter(d2));
+    System.out.println(d2.s + " after " + d3.s + " should be false: " + 
+                       d2.isAfter(d3));
+
+    System.out.println(d1.s + " before " + d2.s + " should be true: " + 
+                       d1.isBefore(d2));
+    System.out.println(d2.s + " before " + d3.s + " should be true: " + 
+                       d2.isBefore(d3));
+    System.out.println(d1.s + " before " + d1.s + " should be false: " + 
+                       d1.isBefore(d1));
+    System.out.println(d2.s + " before " + d1.s + " should be false: " + 
+                       d2.isBefore(d1));
+    System.out.println(d3.s + " before " + d2.s + " should be false: " + 
+                       d3.isBefore(d2));
+
+    System.out.println("\nTesting difference.");
+    System.out.println(d1.s + " - " + d1.s  + " should be 0: " + 
+                       d1.difference(d1));
+    System.out.println(d2.s + " - " + d1.s  + " should be 1: " + 
+                       d2.difference(d1));
+    System.out.println(d3.s + " - " + d1.s  + " should be 2: " + 
+                       d3.difference(d1));
+    System.out.println(d3.s + " - " + d4.s  + " should be -422: " + 
+                       d3.difference(d4));
+    System.out.println(d5.s + " - " + d4.s  + " should be 48762: " + 
+                       d5.difference(d4));
+  }
+}
